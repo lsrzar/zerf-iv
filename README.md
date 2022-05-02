@@ -1,3 +1,3 @@
 # Typescript DDD
 
-No boilerplate code.
+Entrevista ZERF.
