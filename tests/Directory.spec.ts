@@ -27,7 +27,7 @@ describe("[Entity] Directory Unit Tests", () => {
 
     it(`should create a directory and add it to pwd`, () => {
         fsDir.mkdir(dirName)
-        expect(fsDir.pwd()).toContain(dirName)
+        expect(fsDir.route).toContain(dirName)
     })
 
     it(`should create a file and add it to the parent`, () => {

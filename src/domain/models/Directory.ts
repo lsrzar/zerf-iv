@@ -55,16 +55,22 @@ export class Directory {
     mkdir(dirName: string): void {
         const dir = Directory.create(dirName, this);
         this._dirs.push(dir);
-        this._route.concat(`${dirName}/`)
+        this._route = this._route + `${dirName}/`
     }
 
-    cd(dirName: string): void {
+    cd(dirName: string): string {
         const dir = this._dirs.find(d => d.name === dirName);
         if(dirName === '..') {
-            dir._route = dir._route.slice(0, dir._route.lastIndexOf('/'));
+            if(this._route === '~' || this._route === '~/') {
+                this._route = '~/'
+            } else {
+                const lastDir = this.dirs.at(this.dirs.length - 1);
+                this._route = this._route.replace(`${lastDir.name}/`, '');
+            }
         } else {
             dir._route = dir.route
         }
+        return this._route
     }
 
     ls(): string {
