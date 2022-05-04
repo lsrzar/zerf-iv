@@ -1,3 +1,1 @@
 # Typescript DDD
-
-Entrevista ZERF.
