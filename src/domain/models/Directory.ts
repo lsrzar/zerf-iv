@@ -13,7 +13,11 @@ export class Directory {
     private constructor(name: string, parent?: Directory) {
         this._name = name
         this._parent = parent
-        this._route = `${name}/`
+        if(parent) {
+            this._route = `${parent?.route}${name}/`
+        } else {
+            this._route = `${name}/`
+        }
         this._id = uuid()
         this.validate()
     }
@@ -38,11 +42,22 @@ export class Directory {
         return this._route;
     }
 
-    get children(): unknown[] {
-        return [...this._dirs, ...this._files]
+    get parent(): Directory {
+        return this._parent;
     }
 
-    validate() {
+    get children(): Array<fsFile | Directory> {
+        let children: Array<fsFile | Directory> = []
+        this._dirs.forEach((dir: Directory) => {
+            children.push(dir)
+        })
+        this._files.forEach((f: fsFile) => {
+            children.push(f)
+        })
+        return children
+    }
+
+    private validate() {
         if(this._name.length === 0 || this._name.includes('/')) {
             throw new Error(err.INVALID_DIR_NAME);
         }
@@ -50,40 +65,5 @@ export class Directory {
 
     public static create(name: string, parent?: Directory): Directory {
         return new Directory(name, parent);
-    }
-
-    mkdir(dirName: string): void {
-        const dir = Directory.create(dirName, this);
-        this._dirs.push(dir);
-        this._route = this._route + `${dirName}/`
-    }
-
-    cd(dirName: string): string {
-        const dir = this._dirs.find(d => d.name === dirName);
-        if(dirName === '..') {
-            if(this._route === '~' || this._route === '~/') {
-                this._route = '~/'
-            } else {
-                const lastDir = this.dirs.at(this.dirs.length - 1);
-                this._route = this._route.replace(`${lastDir.name}/`, '');
-            }
-        } else {
-            dir._route = dir.route
-        }
-        return this._route
-    }
-
-    ls(): string {
-        return JSON.stringify(this.children)
-    }
-
-    pwd(): string {
-        return this._route;
-    }
-
-    touch(fileName: string): fsFile {
-        const file = fsFile.create(fileName);
-        this._files.push(file);
-        return file;
     }
 }

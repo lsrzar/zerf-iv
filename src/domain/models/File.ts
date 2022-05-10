@@ -25,7 +25,7 @@ export class File {
         return this._createdAt
     }
 
-    validate() {
+    private validate() {
         if(!this._name.includes('.')) {
             throw new Error(err.FILE_EXTENSION_REQUIRED)
         }
